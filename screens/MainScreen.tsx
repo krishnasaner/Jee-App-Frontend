@@ -1,204 +1,363 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
+  Alert,
+  SafeAreaView,
   ScrollView,
-  Dimensions,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
-const { height: screenHeight } = Dimensions.get('window');
+// Define what a question looks like
+type Question = {
+  id: string;
+  number: string;
+  text: string;
+  difficulty: "Easy" | "Medium" | "Hard";
+  options: string[];
+  correctAnswer: number;
+  subject: string;
+  chapter: string;
+  topic: string;
+};
+
+// Sample questions data (like the ones in your screenshots)
+const questions: Question[] = [
+  {
+    id: "q1",
+    number: "Q.1/50",
+    text: "What is the SI unit of force?",
+    difficulty: "Easy",
+    options: ["Joule", "Watt", "Newton", "Pascal"],
+    correctAnswer: 2, // Newton is at index 2
+    subject: "Physics",
+    chapter: "Force",
+    topic: "Units"
+  },
+  {
+    id: "q2",
+    number: "Q.2/50", 
+    text: "A car starts from rest and accelerates uniformly at 2 m/s². What will be its velocity after 5 seconds?",
+    difficulty: "Medium",
+    options: ["5 m/s", "10 m/s", "15 m/s", "20 m/s"],
+    correctAnswer: 1, // 10 m/s is at index 1
+    subject: "Physics",
+    chapter: "Motion",
+    topic: "Kinematics"
+  },
+  {
+    id: "q3",
+    number: "Q.3/50",
+    text: "v = u + at → v = 0 + (2×5) = 10 m/s → Correct = 10 m/s → but actually that matches B, so we'll change it.",
+    difficulty: "Hard",
+    options: ["10 m/s", "15 m/s", "20 m/s", "5 m/s"],
+    correctAnswer: 0, // 10 m/s is at index 0
+    subject: "Physics",
+    chapter: "Motion", 
+    topic: "Equations"
+  }
+];
 
 export default function MainScreen() {
-  const questionText = 'Which of the following molecules\nhas a square planar geometry?';
-  const options = [
-    { id: 'A', text: 'OPTION', isCorrect: false },
-    { id: 'B', text: 'OPTION', isCorrect: false },
-    { id: 'C', text: 'OPTION', isCorrect: true },
-    { id: 'D', text: 'OPTION', isCorrect: false },
-  ];
+  // State to track which question we're currently on
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  
+  // State to track which option is selected
+  const [selectedOption, setSelectedOption] = useState<number | null>(null);
+  
+  // State to track bookmarked questions
+  const [bookmarkedQuestions, setBookmarkedQuestions] = useState<Set<string>>(new Set());
+  
+  // State to track all answers
+  const [answers, setAnswers] = useState<{[key: string]: number}>({});
 
-  const [selectedOptionIndex, setSelectedOptionIndex] = useState<number | null>(null);
-  const [isAnswered, setIsAnswered] = useState(false);
+  // Get the current question
+  const currentQuestion = questions[currentQuestionIndex];
+  
+  // Check if this is the first or last question
+  const isFirstQuestion = currentQuestionIndex === 0;
+  const isLastQuestion = currentQuestionIndex === questions.length - 1;
 
-  const handleOptionClick = (index: number) => {
-    if (isAnswered) return;
-    setSelectedOptionIndex(index);
-    setIsAnswered(true);
+  // Colors for different difficulty levels
+  const difficultyColors = {
+    Easy: { background: "#E8F5E8", text: "#2E7D32" },
+    Medium: { background: "#FFF3E0", text: "#F57C00" },
+    Hard: { background: "#FFEBEE", text: "#C62828" }
   };
 
+  // Function to handle option selection
+  const handleOptionSelect = (optionIndex: number) => {
+    setSelectedOption(optionIndex);
+    
+    // Save the answer
+    setAnswers((prev: {[key: string]: number}) => ({
+      ...prev,
+      [currentQuestion.id]: optionIndex
+    }));
+  };
+
+  // Function to go to previous question
+  const handlePrevious = () => {
+    if (!isFirstQuestion) {
+      setCurrentQuestionIndex((prev: number) => prev - 1);
+      
+      // Load the previous answer if it exists
+      const prevQuestion = questions[currentQuestionIndex - 1];
+      setSelectedOption(answers[prevQuestion.id] || null);
+    }
+  };
+
+  // Function to skip question
+  const handleSkip = () => {
+    Alert.alert(
+      "Skip Question",
+      "Are you sure you want to skip this question?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Skip", onPress: goToNextQuestion }
+      ]
+    );
+  };
+
+  // Function to go to next question
+  const goToNextQuestion = () => {
+    if (isLastQuestion) {
+      // If this is the last question, show completion
+      Alert.alert("Quiz Complete", "You've finished all questions!");
+    } else {
+      // Go to next question
+      setCurrentQuestionIndex((prev: number) => prev + 1);
+      
+      // Load the next answer if it exists
+      const nextQuestion = questions[currentQuestionIndex + 1];
+      setSelectedOption(answers[nextQuestion.id] || null);
+    }
+  };
+
+  // Function to toggle bookmark
+  const toggleBookmark = () => {
+    setBookmarkedQuestions(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(currentQuestion.id)) {
+        newSet.delete(currentQuestion.id);
+      } else {
+        newSet.add(currentQuestion.id);
+      }
+      return newSet;
+    });
+  };
+
+  // Check if current question is bookmarked
+  const isBookmarked = bookmarkedQuestions.has(currentQuestion.id);
+
   return (
-    <ScrollView contentContainerStyle={styles.wrapper} showsVerticalScrollIndicator={false}>
-      <View style={styles.phoneContainer}>
-        <TouchableOpacity style={styles.backButton}>
-          <Ionicons name="arrow-back-circle-outline" size={32} color="#2563eb" />
-        </TouchableOpacity>
+    <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.scrollView}>
+        {/* Breadcrumb */}
+        <Text style={styles.breadcrumb}>
+          {currentQuestion.subject} &gt; {currentQuestion.chapter} &gt; {currentQuestion.topic}
+        </Text>
 
-        <View style={styles.questionCounterWrapper}>
-          <Text style={styles.questionCounter}>Question X/Y</Text>
+        {/* Question number and bookmark */}
+        <View style={styles.questionHeader}>
+          <Text style={styles.questionNumber}>{currentQuestion.number}</Text>
+          <TouchableOpacity onPress={toggleBookmark} style={styles.bookmarkButton}>
+            <Text style={[styles.bookmarkIcon, isBookmarked && styles.bookmarkedIcon]}>
+              {isBookmarked ? "🔖" : "📑"}
+            </Text>
+          </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.bookmarkButton}>
-          <Ionicons name="bookmark-outline" size={32} color="#2563eb" />
-        </TouchableOpacity>
+        {/* Question text */}
+        <Text style={styles.questionText}>{currentQuestion.text}</Text>
 
-        <View style={styles.card}>
-          <View style={styles.cardContent}>
-            <Text style={styles.questionText}>{questionText}</Text>
-            <View style={styles.optionsContainer}>
-              {options.map((option, index) => {
-                const isSelected = selectedOptionIndex === index;
-                const isCorrect = option.isCorrect;
-                const isWrong = isAnswered && isSelected && !isCorrect;
-                const isRight = isAnswered && isSelected && isCorrect;
+        {/* Difficulty tag */}
+        <View style={[
+          styles.difficultyTag, 
+          { backgroundColor: difficultyColors[currentQuestion.difficulty].background }
+        ]}>
+          <Text style={[
+            styles.difficultyText,
+            { color: difficultyColors[currentQuestion.difficulty].text }
+          ]}>
+            {currentQuestion.difficulty}
+          </Text>
+        </View>
 
-                return (
-                  <TouchableOpacity
-                    key={option.id}
-                    style={[styles.optionButton,
-                      isSelected && styles.optionSelected,
-                      isRight && styles.optionCorrect,
-                      isWrong && styles.optionIncorrect,
-                      isSelected && (isRight ? styles.correctBorderLeft : isWrong ? styles.incorrectBorderLeft : styles.selectedBorderLeft)
-                    ]}
-                    disabled={isAnswered}
-                    onPress={() => handleOptionClick(index)}
-                  >
-                    <Text style={styles.optionText}>{`${option.id} ${option.text}`}</Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-
+        {/* Options */}
+        <View style={styles.optionsContainer}>
+          {currentQuestion.options.map((option, index) => (
             <TouchableOpacity
-              style={[styles.nextButton, { backgroundColor: isAnswered ? '#2563eb' : '#f0f0f0' }]}
-              disabled={!isAnswered}
+              key={index}
+              style={[
+                styles.optionButton,
+                selectedOption === index && styles.selectedOption
+              ]}
+              onPress={() => handleOptionSelect(index)}
             >
-              <Text style={[styles.nextText, { color: isAnswered ? '#fff' : '#a1a1aa' }]}>NEXT</Text>
+              <Text style={styles.optionLetter}>
+                {String.fromCharCode(65 + index)}
+              </Text>
+              <Text style={[
+                styles.optionText,
+                selectedOption === index && styles.selectedOptionText
+              ]}>
+                {option}
+              </Text>
             </TouchableOpacity>
-          </View>
+          ))}
         </View>
+      </ScrollView>
+
+      {/* Bottom navigation */}
+      <View style={styles.bottomNav}>
+        <TouchableOpacity
+          style={[styles.navButton, styles.previousButton, isFirstQuestion && styles.disabledButton]}
+          onPress={handlePrevious}
+          disabled={isFirstQuestion}
+        >
+          <Text style={[styles.navButtonText, isFirstQuestion && styles.disabledText]}>
+            Previous
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.navButton, styles.skipButton]}
+          onPress={handleSkip}
+        >
+          <Text style={styles.skipButtonText}>Skip</Text>
+        </TouchableOpacity>
       </View>
-    </ScrollView>
+    </SafeAreaView>
   );
 }
 
+// Styles - This is like CSS for your app
 const styles = StyleSheet.create({
-  wrapper: {
-    flexGrow: 1,
-    backgroundColor: '#eef4ff',
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+  },
+  scrollView: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+  },
+  breadcrumb: {
+    fontSize: 14,
+    color: '#666666',
+    marginBottom: 10,
+  },
+  questionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    marginBottom: 15,
   },
-  phoneContainer: {
-    width: 393,
-    minHeight: screenHeight,
-    backgroundColor: '#eef4ff',
-    position: 'relative',
-    overflow: 'hidden',
-  },
-  backButton: {
-    position: 'absolute',
-    top: 68,
-    left: 24,
-    zIndex: 1,
+  questionNumber: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333333',
   },
   bookmarkButton: {
-    position: 'absolute',
-    top: 68,
-    right: 24,
-    zIndex: 1,
+    padding: 5,
   },
-  questionCounterWrapper: {
-    position: 'absolute',
-    top: 72,
-    left: 0,
-    right: 0,
-    alignItems: 'center',
-    zIndex: 0,
+  bookmarkIcon: {
+    fontSize: 20,
   },
-  questionCounter: {
-    fontFamily: 'Inter',
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#2563eb',
-    textAlign: 'center',
-  },
-  card: {
-    marginTop: 137,
-    width: 393,
-    minHeight:screenHeight,
-    backgroundColor: 'white',
-    borderRadius: 25,
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
-    borderWidth: 3,
-    borderColor: '#2563eb99',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  cardContent: {
-    padding: 27,
-    gap: 30,
+  bookmarkedIcon: {
+    opacity: 1,
   },
   questionText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#2563eb',
-    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#000000',
     lineHeight: 24,
+    marginBottom: 20,
+  },
+  difficultyTag: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    alignSelf: 'flex-start',
+    marginBottom: 30,
+  },
+  difficultyText: {
+    fontSize: 12,
+    fontWeight: '600',
   },
   optionsContainer: {
-    marginTop: 20,
-    gap: 20,
+    marginBottom: 30,
   },
   optionButton: {
-    padding: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
     borderRadius: 12,
-    borderWidth: 2,
-    borderColor: '#ccc',
-    backgroundColor: '#fff',
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: 'transparent',
   },
-  optionSelected: {
-    borderColor: '#2563eb',
-    borderWidth: 2,
+  selectedOption: {
+    backgroundColor: '#E3F2FD',
+    borderColor: '#2196F3',
   },
-  optionCorrect: {
-    backgroundColor: 'rgba(34, 197, 94, 0.2)',
-    borderColor: 'rgba(34, 197, 94, 0.5)',
-  },
-  optionIncorrect: {
-    backgroundColor: 'rgba(239, 68, 68, 0.2)',
-    borderColor: 'rgba(239, 68, 68, 0.5)',
-  },
-  correctBorderLeft: {
-    borderLeftWidth: 6,
-    borderLeftColor: '#22c55e',
-  },
-  incorrectBorderLeft: {
-    borderLeftWidth: 6,
-    borderLeftColor: '#ef4444',
-  },
-  selectedBorderLeft: {
-    borderLeftWidth: 6,
-    borderLeftColor: '#2563eb',
+  optionLetter: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#666666',
+    marginRight: 16,
+    minWidth: 20,
   },
   optionText: {
     fontSize: 16,
-    textAlign: 'center',
+    color: '#333333',
+    flex: 1,
   },
-  nextButton: {
-    marginTop: 50,
-    padding: 15,
-    borderRadius: 12,
+  selectedOptionText: {
+    color: '#2196F3',
+    fontWeight: '600',
+  },
+  bottomNav: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    backgroundColor: '#ffffff',
+    borderTopWidth: 1,
+    borderTopColor: '#E0E0E0',
+  },
+  navButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    minWidth: 100,
     alignItems: 'center',
   },
-  nextText: {
+  previousButton: {
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+  },
+  skipButton: {
+    backgroundColor: '#2196F3',
+  },
+  disabledButton: {
+    opacity: 0.5,
+  },
+  navButtonText: {
     fontSize: 16,
+    color: '#333333',
     fontWeight: '600',
+  },
+  skipButtonText: {
+    fontSize: 16,
+    color: '#ffffff',
+    fontWeight: '600',
+  },
+  disabledText: {
+    color: '#CCCCCC',
   },
 });
