@@ -1,363 +1,459 @@
-import React, { useState } from "react";
-import {
-  Alert,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { FontAwesome } from '@expo/vector-icons'; // Expo's vector icons
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-// Define what a question looks like
 type Question = {
-  id: string;
-  number: string;
-  text: string;
-  difficulty: "Easy" | "Medium" | "Hard";
+  question: string;
   options: string[];
-  correctAnswer: number;
-  subject: string;
-  chapter: string;
-  topic: string;
+  answer: number;
 };
 
-// Sample questions data (like the ones in your screenshots)
 const questions: Question[] = [
   {
-    id: "q1",
-    number: "Q.1/50",
-    text: "What is the SI unit of force?",
-    difficulty: "Easy",
+    question: "What is the SI unit of force?",
     options: ["Joule", "Watt", "Newton", "Pascal"],
-    correctAnswer: 2, // Newton is at index 2
-    subject: "Physics",
-    chapter: "Force",
-    topic: "Units"
+    answer: 2,
   },
   {
-    id: "q2",
-    number: "Q.2/50", 
-    text: "A car starts from rest and accelerates uniformly at 2 m/s². What will be its velocity after 5 seconds?",
-    difficulty: "Medium",
-    options: ["5 m/s", "10 m/s", "15 m/s", "20 m/s"],
-    correctAnswer: 1, // 10 m/s is at index 1
-    subject: "Physics",
-    chapter: "Motion",
-    topic: "Kinematics"
+    question: "What is the chemical symbol for water?",
+    options: ["O2", "H2O", "CO2", "NaCl"],
+    answer: 1,
   },
   {
-    id: "q3",
-    number: "Q.3/50",
-    text: "v = u + at → v = 0 + (2×5) = 10 m/s → Correct = 10 m/s → but actually that matches B, so we'll change it.",
-    difficulty: "Hard",
-    options: ["10 m/s", "15 m/s", "20 m/s", "5 m/s"],
-    correctAnswer: 0, // 10 m/s is at index 0
-    subject: "Physics",
-    chapter: "Motion", 
-    topic: "Equations"
-  }
+    question: "Who is known as the father of computers?",
+    options: ["Isaac Newton", "Albert Einstein", "Charles Babbage", "Nikola Tesla"],
+    answer: 2,
+  },
+  {
+    question: "Which planet is known as the Red Planet?",
+    options: ["Earth", "Mars", "Jupiter", "Saturn"],
+    answer: 1,
+  },
+  {
+    question: "What is the value of π (pi) up to two decimal places?",
+    options: ["3.12", "3.14", "3.16", "3.18"],
+    answer: 1,
+  },
 ];
 
-export default function MainScreen() {
-  // State to track which question we're currently on
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  
-  // State to track which option is selected
-  const [selectedOption, setSelectedOption] = useState<number | null>(null);
-  
-  // State to track bookmarked questions
-  const [bookmarkedQuestions, setBookmarkedQuestions] = useState<Set<string>>(new Set());
-  
-  // State to track all answers
-  const [answers, setAnswers] = useState<{[key: string]: number}>({});
+export default function QuizScreen() {
+  const router = useRouter();
+  const [current, setCurrent] = useState<number>(0);
+  const [selected, setSelected] = useState<number | null>(null);
+  const [answered, setAnswered] = useState<boolean>(false);
+  const [isCorrect, setIsCorrect] = useState<boolean>(false);
+  const [quizSubmitted, setQuizSubmitted] = useState<boolean>(false);
 
-  // Get the current question
-  const currentQuestion = questions[currentQuestionIndex];
-  
-  // Check if this is the first or last question
-  const isFirstQuestion = currentQuestionIndex === 0;
-  const isLastQuestion = currentQuestionIndex === questions.length - 1;
-
-  // Colors for different difficulty levels
-  const difficultyColors = {
-    Easy: { background: "#E8F5E8", text: "#2E7D32" },
-    Medium: { background: "#FFF3E0", text: "#F57C00" },
-    Hard: { background: "#FFEBEE", text: "#C62828" }
+  const handleOptionPress = (idx: number) => {
+    if (answered) return;
+    setSelected(idx);
+    setAnswered(true);
+    setIsCorrect(idx === questions[current].answer);
   };
 
-  // Function to handle option selection
-  const handleOptionSelect = (optionIndex: number) => {
-    setSelectedOption(optionIndex);
-    
-    // Save the answer
-    setAnswers((prev: {[key: string]: number}) => ({
-      ...prev,
-      [currentQuestion.id]: optionIndex
-    }));
-  };
-
-  // Function to go to previous question
-  const handlePrevious = () => {
-    if (!isFirstQuestion) {
-      setCurrentQuestionIndex((prev: number) => prev - 1);
-      
-      // Load the previous answer if it exists
-      const prevQuestion = questions[currentQuestionIndex - 1];
-      setSelectedOption(answers[prevQuestion.id] || null);
-    }
-  };
-
-  // Function to skip question
   const handleSkip = () => {
-    Alert.alert(
-      "Skip Question",
-      "Are you sure you want to skip this question?",
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Skip", onPress: goToNextQuestion }
-      ]
-    );
-  };
-
-  // Function to go to next question
-  const goToNextQuestion = () => {
-    if (isLastQuestion) {
-      // If this is the last question, show completion
-      Alert.alert("Quiz Complete", "You've finished all questions!");
-    } else {
-      // Go to next question
-      setCurrentQuestionIndex((prev: number) => prev + 1);
-      
-      // Load the next answer if it exists
-      const nextQuestion = questions[currentQuestionIndex + 1];
-      setSelectedOption(answers[nextQuestion.id] || null);
+    if (current < questions.length - 1) {
+      setCurrent(current + 1);
+      setSelected(null);
+      setAnswered(false);
+      setIsCorrect(false);
     }
   };
 
-  // Function to toggle bookmark
-  const toggleBookmark = () => {
-    setBookmarkedQuestions(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(currentQuestion.id)) {
-        newSet.delete(currentQuestion.id);
-      } else {
-        newSet.add(currentQuestion.id);
-      }
-      return newSet;
-    });
+  const handleNext = () => {
+    if (current < questions.length - 1) {
+      setCurrent(current + 1);
+      setSelected(null);
+      setAnswered(false);
+      setIsCorrect(false);
+    }
   };
 
-  // Check if current question is bookmarked
-  const isBookmarked = bookmarkedQuestions.has(currentQuestion.id);
+  const handlePrevious = () => {
+    if (current > 0) {
+      setCurrent(current - 1);
+      setSelected(null);
+      setAnswered(false);
+      setIsCorrect(false);
+    }
+  };
+
+  const handleSubmit = () => {
+    setQuizSubmitted(true);
+  };
+
+  const handleGoToLeaderboard = () => {
+    router.push('/(tabs)/leaderboard');
+  };
+
+  if (quizSubmitted) {
+    return (
+      <LinearGradient colors={['#fff', '#e3f2ff']} style={styles.container}>
+        <View style={styles.completionContainer}>
+          <FontAwesome name="check-circle" size={80} color="#00b550" style={styles.completionIcon} />
+          <Text style={styles.completionTitle}>Quiz Completed!</Text>
+          <Text style={styles.completionSubtitle}>Great job on finishing the quiz</Text>
+          
+          <View style={styles.completionButtonContainer}>
+            <TouchableOpacity style={styles.leaderboardBtn} onPress={handleGoToLeaderboard}>
+              <FontAwesome name="trophy" size={20} color="#fff" style={styles.buttonIcon} />
+              <Text style={styles.leaderboardBtnText}>Go to Leaderboard</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </LinearGradient>
+    );
+  }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView}>
-        {/* Breadcrumb */}
-        <Text style={styles.breadcrumb}>
-          {currentQuestion.subject} &gt; {currentQuestion.chapter} &gt; {currentQuestion.topic}
-        </Text>
-
-        {/* Question number and bookmark */}
-        <View style={styles.questionHeader}>
-          <Text style={styles.questionNumber}>{currentQuestion.number}</Text>
-          <TouchableOpacity onPress={toggleBookmark} style={styles.bookmarkButton}>
-            <Text style={[styles.bookmarkIcon, isBookmarked && styles.bookmarkedIcon]}>
-              {isBookmarked ? "🔖" : "📑"}
-            </Text>
-          </TouchableOpacity>
+    <LinearGradient colors={['#fff', '#e3f2ff']} style={styles.container}>
+      {/* Top Bar */}
+      <View style={styles.topBar}>
+        <View style={styles.navbar}>
+          <Text style={styles.navText}>Subject</Text>
+          <Text style={styles.navText}>&gt;</Text>
+          <Text style={styles.navText}>Chapter</Text>
+          <Text style={styles.navText}>&gt;</Text>
+          <Text style={styles.navText}>Topic</Text>
         </View>
-
-        {/* Question text */}
-        <Text style={styles.questionText}>{currentQuestion.text}</Text>
-
-        {/* Difficulty tag */}
-        <View style={[
-          styles.difficultyTag, 
-          { backgroundColor: difficultyColors[currentQuestion.difficulty].background }
-        ]}>
-          <Text style={[
-            styles.difficultyText,
-            { color: difficultyColors[currentQuestion.difficulty].text }
-          ]}>
-            {currentQuestion.difficulty}
-          </Text>
-        </View>
-
-        {/* Options */}
-        <View style={styles.optionsContainer}>
-          {currentQuestion.options.map((option, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[
-                styles.optionButton,
-                selectedOption === index && styles.selectedOption
-              ]}
-              onPress={() => handleOptionSelect(index)}
-            >
-              <Text style={styles.optionLetter}>
-                {String.fromCharCode(65 + index)}
-              </Text>
-              <Text style={[
-                styles.optionText,
-                selectedOption === index && styles.selectedOptionText
-              ]}>
-                {option}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </ScrollView>
-
-      {/* Bottom navigation */}
-      <View style={styles.bottomNav}>
-        <TouchableOpacity
-          style={[styles.navButton, styles.previousButton, isFirstQuestion && styles.disabledButton]}
-          onPress={handlePrevious}
-          disabled={isFirstQuestion}
-        >
-          <Text style={[styles.navButtonText, isFirstQuestion && styles.disabledText]}>
-            Previous
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.navButton, styles.skipButton]}
-          onPress={handleSkip}
-        >
-          <Text style={styles.skipButtonText}>Skip</Text>
-        </TouchableOpacity>
+        <Text style={styles.qCount}>Q.{current + 1}/{questions.length}</Text>
       </View>
-    </SafeAreaView>
+
+      {/* Question */}
+      <View style={styles.questionBar}>
+        <View style={styles.questionRow}>
+          <Text style={styles.questionText}>{questions[current].question}</Text>
+          <FontAwesome name="bookmark" size={24} color="#2563eb" style={styles.bookmarkIcon} />
+        </View>
+      </View>
+
+      {/* Options */}
+      <View style={styles.options}>
+        {questions[current].options.map((opt: string, idx: number) => {
+          let optionStyle = styles.optionDefault;
+          let textStyle = styles.optionDefaultText;
+          if (answered) {
+            if (idx === questions[current].answer) {
+              // If this is the correct answer and user selected it, show green with blue selection
+              if (selected === idx) {
+                optionStyle = styles.optionCorrectSelected;
+                textStyle = styles.optionCorrectText;
+              } else {
+                // Just the correct answer, show green
+                optionStyle = styles.optionCorrect;
+                textStyle = styles.optionCorrectText;
+              }
+            } else if (selected === idx) {
+              // User selected wrong answer, show blue (wrong)
+              optionStyle = styles.optionWrong;
+              textStyle = styles.optionWrongText;
+            }
+          } else if (selected === idx) {
+            // User selected but not answered yet, show blue selection
+            optionStyle = styles.optionSelected;
+          }
+          return (
+            <TouchableOpacity
+              key={idx}
+              style={optionStyle}
+              onPress={() => handleOptionPress(idx)}
+              disabled={answered}
+              activeOpacity={0.7}
+            >
+              <View style={styles.frame}>
+                <Text style={answered && idx === questions[current].answer ? styles.frameCorrectText : styles.frameDefaultText}>
+                  {String.fromCharCode(65 + idx)}
+                </Text>
+              </View>
+              <View style={styles.optionTextWrapper}>
+                <Text style={textStyle}>{opt}</Text>
+              </View>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+
+      {/* Button Row */}
+      <View style={styles.buttonRow}>
+        <TouchableOpacity
+          style={styles.blueBtn}
+          onPress={handlePrevious}
+          disabled={current === 0}
+        >
+          <Text style={[styles.blueBtnText, current === 0 && { opacity: 0.5 }]}>Previous</Text>
+        </TouchableOpacity>
+        {current === questions.length - 1 ? (
+          <TouchableOpacity style={styles.blueBtn} onPress={handleSubmit}>
+            <Text style={styles.blueBtnText}>Submit</Text>
+          </TouchableOpacity>
+        ) : answered ? (
+          <TouchableOpacity style={styles.blueBtn} onPress={handleNext}>
+            <Text style={styles.blueBtnText}>Next</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.blueBtn} onPress={handleSkip}>
+            <Text style={styles.blueBtnText}>Skip</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+    </LinearGradient>
   );
 }
 
-// Styles - This is like CSS for your app
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
-  },
-  scrollView: {
-    flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 20,
-  },
-  breadcrumb: {
-    fontSize: 14,
-    color: '#666666',
-    marginBottom: 10,
-  },
-  questionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    width: '100%',
     alignItems: 'center',
-    marginBottom: 15,
+    justifyContent: 'flex-start',
   },
-  questionNumber: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333333',
+  topBar: {
+    width: 391,
+    paddingHorizontal: 20,
+    paddingBottom: 24,
+    paddingTop: 64,
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: 10,
   },
-  bookmarkButton: {
-    padding: 5,
+  navbar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
   },
-  bookmarkIcon: {
-    fontSize: 20,
+  navText: {
+    fontWeight: '500',
+    color: '#6b7280',
+    fontSize: 14,
   },
-  bookmarkedIcon: {
-    opacity: 1,
+  qCount: {
+    fontWeight: '500',
+    color: '#000',
+    fontSize: 15,
+    marginTop: 8,
+  },
+  questionBar: {
+    width: 391,
+    paddingHorizontal: 20,
+    marginTop: 8,
+    marginBottom: 8,
+  },
+  questionRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    gap: 8,
   },
   questionText: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#000000',
-    lineHeight: 24,
-    marginBottom: 20,
-  },
-  difficultyTag: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
-    alignSelf: 'flex-start',
-    marginBottom: 30,
-  },
-  difficultyText: {
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  optionsContainer: {
-    marginBottom: 30,
-  },
-  optionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F5F5F5',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: 'transparent',
-  },
-  selectedOption: {
-    backgroundColor: '#E3F2FD',
-    borderColor: '#2196F3',
-  },
-  optionLetter: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#666666',
-    marginRight: 16,
-    minWidth: 20,
-  },
-  optionText: {
-    fontSize: 16,
-    color: '#333333',
     flex: 1,
-  },
-  selectedOptionText: {
-    color: '#2196F3',
     fontWeight: '600',
+    color: '#111827',
+    fontSize: 20,
   },
-  bottomNav: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  bookmarkIcon: {
+    marginTop: 2,
+  },
+  options: {
+    width: 392,
     paddingHorizontal: 20,
-    paddingVertical: 16,
-    backgroundColor: '#ffffff',
-    borderTopWidth: 1,
-    borderTopColor: '#E0E0E0',
+    paddingTop: 48,
+    gap: 12,
   },
-  navButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
-    minWidth: 100,
+  optionDefault: {
+    backgroundColor: 'rgba(249,250,251,0.5)',
+    borderRadius: 12,
+    flexDirection: 'row',
     alignItems: 'center',
+    gap: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 3,
   },
-  previousButton: {
-    backgroundColor: 'transparent',
+  optionSelected: {
+    backgroundColor: '#dbeafe',
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 3,
+  },
+  optionCorrect: {
+    backgroundColor: '#a9f5c7',
+    borderColor: '#00b550',
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 3,
   },
-  skipButton: {
-    backgroundColor: '#2196F3',
+  optionCorrectSelected: {
+    backgroundColor: '#dbeafe',
+    borderColor: '#00b550',
+    borderWidth: 2,
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 3,
   },
-  disabledButton: {
-    opacity: 0.5,
+  optionWrong: {
+    backgroundColor: '#2563eb',
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 3,
   },
-  navButtonText: {
+  frame: {
+    backgroundColor: '#2563eb',
+    borderRadius: 999,
+    width: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 5,
+    paddingHorizontal: 9,
+  },
+  frameDefaultText: {
+    color: '#fff',
+    fontWeight: '500',
+    fontSize: 14,
+  },
+  frameCorrectText: {
+    color: '#fff',
+    fontWeight: '500',
+    fontSize: 14,
+  },
+  optionTextWrapper: {
+    flex: 1,
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 10,
+  },
+  optionDefaultText: {
+    color: '#000',
+    fontWeight: '500',
     fontSize: 16,
-    color: '#333333',
-    fontWeight: '600',
   },
-  skipButtonText: {
+  optionCorrectText: {
+    color: '#004d40',
+    fontWeight: '500',
     fontSize: 16,
-    color: '#ffffff',
-    fontWeight: '600',
   },
-  disabledText: {
-    color: '#CCCCCC',
+  optionWrongText: {
+    color: '#fff',
+    fontWeight: '500',
+    fontSize: 16,
+  },
+  buttonRow: {
+    width: 392,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 12,
+    paddingHorizontal: 20,
+    paddingVertical: 24,
+    position: 'absolute',
+    bottom: 0,
+  },
+  blueBtn: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 12,
+    backgroundColor: '#2563eb',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    marginHorizontal: 6,
+  },
+  blueBtnText: {
+    color: '#fff',
+    fontWeight: '500',
+    fontSize: 16,
+  },
+  // New styles for completion screen
+  completionContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  completionIcon: {
+    marginBottom: 24,
+  },
+  completionTitle: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#2563eb',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  completionSubtitle: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#6b7280',
+    marginBottom: 48,
+    textAlign: 'center',
+  },
+  completionButtonContainer: {
+    width: '100%',
+    maxWidth: 300,
+  },
+  leaderboardBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 12,
+    backgroundColor: '#2563eb',
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 3,
+  },
+  buttonIcon: {
+    marginRight: 8,
+  },
+  leaderboardBtnText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 18,
   },
 });

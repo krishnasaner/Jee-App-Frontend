@@ -1,11 +1,3 @@
-import React from 'react';
-import MainScreen from '../../screens/MainScreen'; // ✅ make sure path is correct
+import QuizScreen from '../../screens/MainScreen';
 
-
-
-export default function MainScreenPage() {
-  return <MainScreen />;
-}
-
-
-
+export default QuizScreen;
