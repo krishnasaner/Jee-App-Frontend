@@ -13,17 +13,20 @@ export default function RootLayout() {
   });
 
   if (!loaded) {
-    // Async font loading only occurs in development.
-    return null;
+    return null; // Wait until fonts are loaded
   }
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
+        {/* The (tabs) group holds your MainScreen and Explore (if you keep it) */}
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+
+        {/* Not found screen */}
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
   );
 }
+

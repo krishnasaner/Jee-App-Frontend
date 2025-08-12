@@ -1,3 +1,8 @@
-import QuizScreen from '../../screens/MainScreen';
+import React from 'react';
+import MainScreen from '../../screens/MainScreen';
 
-export default QuizScreen;
+export default function Index() {
+  return <MainScreen />;
+}
+
+
