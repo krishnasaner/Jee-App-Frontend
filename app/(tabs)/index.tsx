@@ -1,8 +1,8 @@
 import React from 'react';
-import MainScreen from '../../screens/MainScreen';
+import SplashScreen2 from '@/screens/SplashScreen2';
 
 export default function Index() {
-  return <MainScreen />;
+  return <SplashScreen2></SplashScreen2>;
 }
 
 
