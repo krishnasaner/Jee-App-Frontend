@@ -19,9 +19,9 @@ const color = {
   gray: "#cfcfcfff",
 };
 
-export default function SplashScreen2() {
+export default function SplashScreen1() {
   const router = useRouter(); // navigation hook
-  const activeIndex = 1;
+  const activeIndex = 0;
   const totalDots = 3;
 
   return (
@@ -29,11 +29,12 @@ export default function SplashScreen2() {
       <View style={styles.content}>
         {/* Heading */}
         <View style={styles.textcon}>
-          <Text style={styles.title}>Complete on{"\n"}Leaderboards</Text>
+          <Text style={styles.title}>Practice
+Starts Instantly</Text>
+ 
           <Text style={styles.subtitle}>
-            Challenge friends and top JEE aspirants.{"\n"}
-            Climb ranks and prove your exam{"\n"}
-            readiness.
+            Jump straight into smart JEE questions.
+No Setup, no waiting just start solving.
           </Text>
         </View>
 
@@ -41,22 +42,23 @@ export default function SplashScreen2() {
         <View style={styles.imageWrapper}>
           <View style={styles.imageWrapper1}>
             <View style={styles.imageWrapper2}>
-              <Image
-                source={require('../assets/images/splash_img.png')}
-                style={styles.image}
-                resizeMode="contain"
-              />
+              
             </View>
           </View>
         </View>
-
+        <Image
+                source={require('../assets/images/splash_img.png')}
+                style={styles.image}
+                resizeMode="contain"
+        />
+      
         {/* Arrow Button */}
         <TouchableOpacity
           style={styles.arrowButton}
-          onPress={() => router.push('/splashScreen3')} // go to main screen
+          onPress={() => router.push('/splashScreen2')} // go to main screen
         >
           <View style={styles.innerBorder} />
-          <Entypo name="arrow-bold-right" size={24} color={color.blue500} />
+          <Entypo name="arrow-bold-right" size={24} color="white" />
         </TouchableOpacity>
 
         {/* Indicator Dots */}
@@ -89,7 +91,7 @@ const styles = StyleSheet.create({
   },
   textcon: {
     position: 'absolute',
-    top: -height * 0.4,
+    bottom: -height * 0.33,
   },
   title: {
     fontSize: width * 0.08,
@@ -99,6 +101,7 @@ const styles = StyleSheet.create({
     marginBottom: height * 0.015,
   },
   subtitle: {
+
     fontSize: width * 0.035,
     color: '#444',
     textAlign: 'center',
@@ -107,7 +110,8 @@ const styles = StyleSheet.create({
   },
   imageWrapper: {
     position: 'absolute',
-    top: height * 0.01,
+    bottom: -height * 0.1,
+    left: -width * 0.7,
     backgroundColor: color.blue300,
     borderTopLeftRadius: width * 0.5,
     borderTopRightRadius: width * 0.5,
@@ -117,6 +121,8 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     paddingTop: height * 0.02,
     alignSelf: 'center',
+     transform: [{rotate: '145deg'}]
+    
   },
   imageWrapper1: {
     position: 'absolute',
@@ -124,7 +130,7 @@ const styles = StyleSheet.create({
     backgroundColor: color.blue400,
     borderTopLeftRadius: width * 0.5,
     borderTopRightRadius: width * 0.5,
-    width: width * 0.6,
+    width: width * 0.5,
     height: height * 0.9,
     alignItems: 'center',
     justifyContent: 'flex-start',
@@ -133,22 +139,27 @@ const styles = StyleSheet.create({
   },
   imageWrapper2: {
     position: 'absolute',
-    top: height * 0.03,
+    top: height * 0.00,
+    right: width * 0.05,
     backgroundColor: color.blue500,
     borderTopLeftRadius: width * 0.5,
     borderTopRightRadius: width * 0.5,
-    width: width * 0.6,
-    height: height * 0.9,
+    width: width * 0.5,
+    height: height * 0.8,
     alignItems: 'center',
     justifyContent: 'flex-start',
     paddingTop: height * 0.02,
     alignSelf: 'center',
+    
   },
   image: {
     position: 'absolute',
-    bottom: height * 0.67,
-    width: width * 0.9,
+    bottom: -height * 0.0,
+    width: width * 1,
     height: height * 0.4,
+    transform: [{ scaleX: -1 }]
+    
+     
   },
   indicatorContainer: {
     position: 'absolute',
@@ -174,7 +185,7 @@ const styles = StyleSheet.create({
   arrowButton: {
   position: 'absolute',
   bottom: -height * 0.4,
-  backgroundColor: '#fff',
+  backgroundColor: color.blue500,
   borderRadius: 50,
   width: width * 0.13,
   height: width * 0.13,
@@ -191,7 +202,7 @@ innerBorder: {
   bottom: 2,
   borderRadius: 50,
   borderWidth: 2,
-  borderColor: color.blue500, // Border color
+  borderColor: "#ffff", // Border color
   
 },
 
