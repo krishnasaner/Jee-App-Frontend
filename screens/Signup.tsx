@@ -11,6 +11,7 @@ import {
   View,
 } from "react-native";
 import Svg, { Path } from "react-native-svg";
+import { useRouter } from "expo-router";
 
 const { width, height } = Dimensions.get("window");
 
@@ -34,6 +35,7 @@ const HeaderSVG = () => {
 };
 
 const Signup = () => {
+  const router = useRouter();
   const [fullName, setFullName] = useState("");
   const [emailOrPhone, setEmailOrPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -111,8 +113,9 @@ const Signup = () => {
 
         <TouchableOpacity
           style={[styles.signUpButton, !agreeToTerms && styles.buttonDisabled]}
-          onPress={handleSignUp}
+          onPress={() => router.push('/main')}
           disabled={!agreeToTerms}
+          
         >
           <Text style={styles.signUpButtonText}>Sign up</Text>
         </TouchableOpacity>

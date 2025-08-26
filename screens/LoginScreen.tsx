@@ -21,14 +21,14 @@ export default function LoginScreen() {
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={styles.loginButton}
-          // onPress={() => router.push("/home")}
+          onPress={() => router.push("/login")}
         >
           <Text style={styles.loginText}>Login</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.registerButton}
-          // onPress={() => router.push("/register")}
+          onPress={() => router.push("/signup")}
         >
           <Text style={styles.registerText}>Register</Text>
         </TouchableOpacity>
@@ -99,4 +99,3 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
- login screen

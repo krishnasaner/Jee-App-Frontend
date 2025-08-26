@@ -55,7 +55,7 @@ progress grow.
         {/* Arrow Button */}
         <TouchableOpacity
           style={styles.arrowButton}
-          onPress={() => router.push('/main')} // go to main screen
+          onPress={() => router.push('/signup')} // go to main screen
         >
           <View style={styles.innerBorder} />
           <Entypo name="arrow-bold-right" size={24} color="white" />

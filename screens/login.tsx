@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
-export default function LoginScreen({ navigation }) {
+export default function LoginScreen({ navigation } : {navigation : any}) {
   return (
     <SafeAreaView style={styles.container}>
       {/* ===== Gradient Header ===== */}
@@ -160,4 +160,3 @@ const styles = StyleSheet.create({
     color: "#666",
   },
 });
-export default login;
