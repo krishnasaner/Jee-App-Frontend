@@ -1,5 +1,5 @@
+import MainScreen from '@/screens/QuizScreen';
 import React from 'react';
-import MainScreen from '@/screens/MainScreen';
 
 export default function Index() {
   return <MainScreen></MainScreen>;

@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  StatusBar,
   Dimensions,
-  SafeAreaView,
-  Platform,
+  FlatList,
   Image,
-  TouchableOpacity,
   Modal,
+  Platform,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import Svg, { Path, Rect } from 'react-native-svg';
 
@@ -142,7 +142,7 @@ const QuizCard = ({ item }) => (
   </View>
 );
 
-export default function ChemistryQuizList() {
+export default function MathQuizList() {
   const [rulesVisible, setRulesVisible] = useState(false);
 
   return (

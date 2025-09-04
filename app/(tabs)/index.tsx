@@ -1,8 +1,6 @@
-import SplashScreen1 from '@/screens/SplashScreen1';
 import React from 'react';
+import MainScreen from '../../screens/MainScreen';
 
-
-export default function Index() {
-  return <SplashScreen1></SplashScreen1>;
+export default function IndexRoute() {
+  return <MainScreen />;
 }
-

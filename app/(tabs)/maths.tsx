@@ -1,6 +1,6 @@
-import React from 'react'
-import maths from '@/screens/Maths'
+import React from 'react';
+import MathsScreen from '../../screens/maths';
 
-export default function MathsScreen(){
-    return <Maths/>
+export default function MathsRoute() {
+  return <MathsScreen />;
 }

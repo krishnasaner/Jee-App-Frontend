@@ -1,6 +1,6 @@
-import React from 'react'
-import physics from '@/screens/physics'
+import React from 'react';
+import PhysicsScreen from '../../screens/physics';
 
-export default function physicsScreen(){
-    return <physics/>
+export default function PhysicsRoute() {
+  return <PhysicsScreen />;
 }

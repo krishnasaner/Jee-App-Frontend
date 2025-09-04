@@ -1,7 +1,7 @@
 import React from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from "react-native";
-import Svg, { Path } from "react-native-svg";
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import * as Progress from "react-native-progress";
+import Svg, { Path } from "react-native-svg";
 
 // ===== Gradient Header SVG =====
 const HeaderSVG = () => (
@@ -26,6 +26,7 @@ const chapters = [
     id: 1,
     title: "Some Basic Concepts of Chemistry",
     progress: 0.75,
+    // use the placeholder you created in assets/icon
     icon: require("../assets/icon/chap1.png"),
   },
   {
