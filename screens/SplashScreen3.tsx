@@ -1,15 +1,15 @@
 import Entypo from '@expo/vector-icons/Entypo';
+import { useRouter } from 'expo-router';
 import React from 'react';
 import {
+  Dimensions,
   Image,
   SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  Dimensions,
 } from 'react-native';
-import { useRouter } from 'expo-router';
 
 const { width, height } = Dimensions.get('window');
 const color = {
@@ -61,18 +61,6 @@ progress grow.
           <Entypo name="arrow-bold-right" size={24} color="white" />
         </TouchableOpacity>
 
-        {/* Indicator Dots */}
-        <View style={styles.indicatorContainer}>
-          {Array.from({ length: totalDots }).map((_, index) => (
-            <View
-              key={index}
-              style={[
-                styles.dot,
-                index === activeIndex ? styles.activeDot : styles.inactiveDot,
-              ]}
-            />
-          ))}
-        </View>
       </View>
     </SafeAreaView>
   );

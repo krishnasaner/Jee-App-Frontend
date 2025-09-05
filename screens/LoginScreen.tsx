@@ -1,36 +1,49 @@
-import { useRouter } from "expo-router";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React from "react";
+import {
+  Image,
+  ImageBackground,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export default function LoginScreen() {
-  const router = useRouter();
+
 
   return (
     <View style={styles.container}>
-      {/* Top Section */}
-      <View style={styles.topSection}>
+      {/* Gradient Background Top Section */}
+      <ImageBackground
+        source={require("@/assets/images/gradient_bg.jpg")} 
+        style={styles.topSection}
+        resizeMode="cover"
+      >
         <Text style={styles.title}>Master JEE</Text>
         <Text style={styles.subtitle}>One Question at a Time</Text>
+
+        {/* Character Image */}
         <Image
-          source={require("@/assets/images/splash_img.png")}
+          source={require("@/assets/images/splash_img.png")} 
           style={styles.image}
           resizeMode="contain"
         />
-      </View>
+      </ImageBackground>
 
-      {/* Buttons */}
+      {/*  Button Section */}
       <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={styles.loginButton}
-          onPress={() => router.push("/login")}
-        >
+        <TouchableOpacity style={styles.loginButton}>
           <Text style={styles.loginText}>Login</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.registerButton}
-          onPress={() => router.push("/signup")}
-        >
-          <Text style={styles.registerText}>Register</Text>
+        <TouchableOpacity style={styles.signupButton}>
+          <Text style={styles.signupText}>Sign up</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.guestButton}>
+          <Text style={styles.guestText}>
+            Continue as <Text style={styles.guestBold}>Guest</Text>
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -38,22 +51,27 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
+  //  Base
   container: {
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
   },
+
+  //  Top Section
   topSection: {
     width: "100%",
-    backgroundColor: "#2D6CF6",
-    paddingTop: 70,
-    paddingBottom: 40,
+    height: 420,
     alignItems: "center",
+    justifyContent: "flex-start",
+    paddingTop: 70,
+    paddingBottom: 20,
     borderBottomLeftRadius: 180,
     borderBottomRightRadius: 180,
+    overflow: "hidden",
   },
   title: {
-    fontSize: 28,
+    fontSize: 26,
     fontWeight: "bold",
     color: "#fff",
   },
@@ -63,12 +81,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   image: {
-    width: 420,
-    height: 420,
-    marginTop: 20,
+    width: 280,
+    height: 280,
+    marginTop: 10,
   },
+
+  //  Buttons
   buttonContainer: {
-    marginTop: 40,
+    marginTop: 30,
     width: "80%",
     alignItems: "center",
   },
@@ -85,17 +105,29 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     textAlign: "center",
   },
-  registerButton: {
+  signupButton: {
     width: "100%",
     paddingVertical: 14,
     borderWidth: 1.5,
     borderColor: "#2D6CF6",
     borderRadius: 10,
+    marginBottom: 15,
   },
-  registerText: {
+  signupText: {
     color: "#2D6CF6",
     fontSize: 16,
     fontWeight: "600",
     textAlign: "center",
+  },
+  guestButton: {
+    marginTop: 5,
+  },
+  guestText: {
+    color: "#000",
+    fontSize: 14,
+  },
+  guestBold: {
+    color: "#2D6CF6",
+    fontWeight: "600",
   },
 });
