@@ -1,4 +1,5 @@
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Dimensions, Image, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import * as Progress from "react-native-progress";
@@ -29,6 +30,7 @@ const HeaderSVG = () => (
 );
 
 export default function HomeScreen() {
+  const router = useRouter()
   const [activeTab, setActiveTab] = useState("home");
 
   // Icon pop-up animation values
@@ -147,7 +149,9 @@ export default function HomeScreen() {
         <Text style={styles.sectionTitle}>Subjects</Text>
 
         {/* PHYSICS */}
-        <View style={styles.subjectCard}>
+        <TouchableOpacity style={styles.subjectCard}
+        onPress={() => router.push("/PhysicsQuizList")}
+        >
           <View style={styles.subjectIconContainer}>
             <Image source={require("@/assets/images/headerpy.png")} style={styles.subjectIcon} resizeMode="contain" />
           </View>
@@ -158,10 +162,12 @@ export default function HomeScreen() {
           <TouchableOpacity>
             <Text style={[styles.accuracy, { color: "#000105ff" }]}>Accuracy 55%</Text>
           </TouchableOpacity>
-        </View>
+        </TouchableOpacity>
 
         {/* Chemistry */}
-        <View style={styles.subjectCard}>
+        <TouchableOpacity style={styles.subjectCard}
+        onPress={() => router.push("/ChemistryQuizList")}
+        >
           <View style={styles.subjectIconContainer}>
             <Image source={require("@/assets/images/Chemistry logo.png")} style={styles.subjectIcon} resizeMode="contain" />
           </View>
@@ -172,10 +178,12 @@ export default function HomeScreen() {
           <TouchableOpacity>
             <Text style={[styles.accuracy, { color: "#000105ff" }]}>Accuracy 77%</Text>
           </TouchableOpacity>
-        </View>
+        </TouchableOpacity>
 
         {/* Maths */}
-        <View style={styles.subjectCard}>
+        <TouchableOpacity style={styles.subjectCard}
+        onPress={() => router.push("/MathsQuizList")}
+        >
           <View style={styles.subjectIconContainer}>
             <Image source={require("@/assets/images/mathslogo.png")} style={styles.subjectIcon} resizeMode="contain" />
           </View>
@@ -186,7 +194,7 @@ export default function HomeScreen() {
           <TouchableOpacity>
             <Text style={[styles.accuracy, { color: "#000105ff" }]}>Accuracy 65%</Text>
           </TouchableOpacity>
-        </View>
+        </TouchableOpacity>
       </ScrollView>
 
       {/* ===== Bottom Navigation (fixed) ===== */}

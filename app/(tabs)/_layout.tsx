@@ -54,7 +54,7 @@ export default function RootLayout() {
       <Stack.Screen 
         name="signup" 
         options={{
-          headerShown: true,
+          headerShown: false,
           title: 'Create Account',
           headerStyle: { backgroundColor: '#4A90E2' },
           headerTintColor: 'white',
@@ -85,7 +85,7 @@ export default function RootLayout() {
       <Stack.Screen 
         name="MathsQuizList" 
         options={{
-          headerShown: true,
+          headerShown: false,
           title: 'Math Quizzes',
           headerStyle: { backgroundColor: '#FF9500' },
           headerTintColor: 'white',
@@ -107,7 +107,7 @@ export default function RootLayout() {
       <Stack.Screen 
         name="PhysicsQuizList" 
         options={{
-          headerShown: true,
+          headerShown: false,
           title: 'Physics Quizzes',
           headerStyle: { backgroundColor: '#34C759' },
           headerTintColor: 'white',
@@ -129,7 +129,7 @@ export default function RootLayout() {
       <Stack.Screen 
         name="ChemistryQuizList" 
         options={{
-          headerShown: true,
+          headerShown: false,
           title: 'Chemistry Quizzes',
           headerStyle: { backgroundColor: '#AF52DE' },
           headerTintColor: 'white',
