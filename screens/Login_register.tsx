@@ -1,5 +1,6 @@
 // LoginScreen.js
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import {
   SafeAreaView,
   StyleSheet,
@@ -10,7 +11,8 @@ import {
 } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
-export default function LoginScreen({ navigation } : {navigation ?: any}) {
+export default function LoginScreen() {
+  const router = useRouter()
   return (
     <SafeAreaView style={styles.container}>
       {/* ===== Gradient Header ===== */}
@@ -18,7 +20,6 @@ export default function LoginScreen({ navigation } : {navigation ?: any}) {
         <HeaderSVG />
         <TouchableOpacity
           style={styles.backButton}
-          onPress={() => navigation.goBack()}
         >
           <Ionicons name="arrow-back" size={22} color="white" />
         </TouchableOpacity>
@@ -42,7 +43,7 @@ export default function LoginScreen({ navigation } : {navigation ?: any}) {
           <Text style={{ fontWeight: "bold" }}>Don’t have account? </Text>
           <Text
             style={[styles.signupLink, { fontWeight: "bold" }]}
-            onPress={() => navigation.navigate("Signup")}
+            onPress={() => router.push("/signup")}
           >
             Sign up
           </Text>

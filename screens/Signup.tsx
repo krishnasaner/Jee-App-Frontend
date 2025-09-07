@@ -168,7 +168,7 @@ const Signup = () => {
                 styles.signUpButton,
                 !agreeToTerms && styles.buttonDisabled,
               ]}
-              onPress={() => router.push("/main")}
+              onPress={() => router.push("/HomeScreen")}
               disabled={!agreeToTerms}
             >
               <Text style={styles.signUpButtonText}>Sign up</Text>

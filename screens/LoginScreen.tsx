@@ -1,3 +1,4 @@
+import { useRouter } from "expo-router";
 import React from "react";
 import {
   Image,
@@ -9,13 +10,13 @@ import {
 } from "react-native";
 
 export default function LoginScreen() {
-
+  const router = useRouter();
 
   return (
     <View style={styles.container}>
       {/* Gradient Background Top Section */}
       <ImageBackground
-        source={require("@/assets/images/gradient_bg.jpg")} 
+        source={require("@/assets/images/gradient_bg.jpg")}
         style={styles.topSection}
         resizeMode="cover"
       >
@@ -24,7 +25,7 @@ export default function LoginScreen() {
 
         {/* Character Image */}
         <Image
-          source={require("@/assets/images/splash_img.png")} 
+          source={require("@/assets/images/splash_img.png")}
           style={styles.image}
           resizeMode="contain"
         />
@@ -32,11 +33,17 @@ export default function LoginScreen() {
 
       {/*  Button Section */}
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.loginButton}>
+        <TouchableOpacity
+          style={styles.loginButton}
+          onPress={() => router.push("/Login_register")}
+        >
           <Text style={styles.loginText}>Login</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.signupButton}>
+        <TouchableOpacity
+          style={styles.signupButton}
+          onPress={() => router.push("/signup")}
+        >
           <Text style={styles.signupText}>Sign up</Text>
         </TouchableOpacity>
 
