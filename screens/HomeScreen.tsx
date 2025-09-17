@@ -98,16 +98,18 @@ export default function HomeScreen() {
       <View style={styles.header}>
         <HeaderSVG />
         <View style={styles.headerContent}>
-          <Text style={styles.appTitle}>JEE APP</Text>
+          <Text style={styles.appTitle}>Joint Entrance Exam Main</Text>
 
           <View style={styles.userCard}>
             <View style={styles.userAvatar}>
               <Ionicons name="person" size={24} color="#1E5EFF" />
             </View>
             <View style={{ flex: 1, marginLeft: 10 }}>
-              <Text style={styles.userName}>Hi, John</Text>
-              <Text style={styles.readyText}>You are ready for jee 85%</Text>
-              <Progress.Bar progress={0.85} width={null} height={8} color="#FFD700" borderWidth={0} style={{ marginTop: 6 }} />
+              <Text style={styles.userName}>Hi , John</Text>
+              <View style={styles.readyContainer}>
+                <Text style={styles.readyText}>65% Ready for jee</Text>
+                <Progress.Bar progress={0.65} width={null} height={8} color="#FFD700" borderWidth={0} style={{ marginTop: 6 }} />
+              </View>
             </View>
           </View>
         </View>
@@ -117,32 +119,32 @@ export default function HomeScreen() {
       <View style={styles.featuresRow}>
         <TouchableOpacity style={styles.feature}>
           <View style={styles.featureIconContainer}>
-            <MaterialIcons name="bookmark-outline" size={28} color="#000" />
+            <Image source={require("../assets/icon/statistics 1.png")} style={styles.subjectIcon} resizeMode="contain" />
           </View>
-          <Text style={styles.featureText}>Saved</Text>
+          <Text style={styles.featureText}>Stats</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.feature}>
           <View style={styles.featureIconContainer}>
-            <Ionicons name="time-outline" size={28} color="#000" />
+            <Image source={require("../assets/icon/star (4) 1.png")} style={styles.subjectIcon} resizeMode="contain" />
           </View>
-          <Text style={styles.featureText}>Feature</Text>
+          <Text style={styles.featureText}>Started</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.feature}>
           <View style={styles.featureIconContainer}>
-            <Ionicons name="settings-outline" size={28} color="#000" />
+            <Image source={require("../assets/icon/x-button 1.png")} style={styles.subjectIcon} resizeMode="contain" />
           </View>
-          <Text style={styles.featureText}>Feature</Text>
+          <Text style={styles.featureText}>WQB</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.feature}>
           <View style={styles.featureIconContainer}>
-            <Ionicons name="star-outline" size={28} color="#000" />
+            <Image source={require("../assets/icon/question (3) 1.png")} style={styles.subjectIcon} resizeMode="contain" />
           </View>
-          <Text style={styles.featureText}>Feature</Text>
+          <Text style={styles.featureText}>PYQ QUES</Text>
         </TouchableOpacity>
       </View>
 
       {/* ===== Subjects ===== */}
-      <ScrollView 
+      <ScrollView
         contentContainerStyle={styles.body}
         showsVerticalScrollIndicator={false}
       >
@@ -150,49 +152,49 @@ export default function HomeScreen() {
 
         {/* PHYSICS */}
         <TouchableOpacity style={styles.subjectCard}
-        onPress={() => router.push("/PhysicsQuizList")}
+          onPress={() => router.push("/PhysicsQuizList")}
         >
           <View style={styles.subjectIconContainer}>
-            <Image source={require("@/assets/images/headerpy.png")} style={styles.subjectIcon} resizeMode="contain" />
+            <Image source={require("../assets/icon/headerpy.png")} style={styles.subjectIcon} resizeMode="contain" />
           </View>
           <View style={{ flex: 1 }}>
             <Text style={styles.subjectName}>PHYSICS</Text>
             <Progress.Bar progress={0.77} width={null} height={7} color="#1E5EFF" borderWidth={0} />
           </View>
           <TouchableOpacity>
-            <Text style={[styles.accuracy, { color: "#000105ff" }]}>Accuracy 55%</Text>
+            <Text style={[styles.accuracy, { color: "#000105ff" }]}>X/Y Ch Complete</Text>
           </TouchableOpacity>
         </TouchableOpacity>
 
         {/* Chemistry */}
         <TouchableOpacity style={styles.subjectCard}
-        onPress={() => router.push("/ChemistryQuizList")}
+          onPress={() => router.push("/ChemistryQuizList")}
         >
           <View style={styles.subjectIconContainer}>
-            <Image source={require("@/assets/images/Chemistry logo.png")} style={styles.subjectIcon} resizeMode="contain" />
+            <Image source={require("../assets/icon/Chemistry logo (2).png")} style={styles.subjectIcon} resizeMode="contain" />
           </View>
           <View style={{ flex: 1 }}>
             <Text style={styles.subjectName}>CHEMISTRY</Text>
             <Progress.Bar progress={0.77} width={null} height={7} color="#1E5EFF" borderWidth={0} />
           </View>
           <TouchableOpacity>
-            <Text style={[styles.accuracy, { color: "#000105ff" }]}>Accuracy 77%</Text>
+            <Text style={[styles.accuracy, { color: "#000105ff" }]}>X/Y Ch Complete</Text>
           </TouchableOpacity>
         </TouchableOpacity>
 
         {/* Maths */}
         <TouchableOpacity style={styles.subjectCard}
-        onPress={() => router.push("/MathsQuizList")}
+          onPress={() => router.push("/MathsQuizList")}
         >
           <View style={styles.subjectIconContainer}>
-            <Image source={require("@/assets/images/mathslogo.png")} style={styles.subjectIcon} resizeMode="contain" />
+            <Image source={require("../assets/icon/mathslogo.png")} style={styles.subjectIcon} resizeMode="contain" />
           </View>
           <View style={{ flex: 1 }}>
             <Text style={styles.subjectName}>MATHS</Text>
             <Progress.Bar progress={0.65} width={null} height={7} color="#1E5EFF" borderWidth={0} />
           </View>
           <TouchableOpacity>
-            <Text style={[styles.accuracy, { color: "#000105ff" }]}>Accuracy 65%</Text>
+            <Text style={[styles.accuracy, { color: "#000105ff" }]}>X/Y Ch Complete</Text>
           </TouchableOpacity>
         </TouchableOpacity>
       </ScrollView>
@@ -205,12 +207,6 @@ export default function HomeScreen() {
             <Animated.View style={[styles.navItem, homeAnimatedStyle]}>
               <Ionicons name="home" size={28} color="#ded8ecff" />
               <Text style={styles.navText}>Home</Text>
-            </Animated.View>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleTabPress("timer")} style={styles.tabButton}>
-            <Animated.View style={[styles.navItem, timerAnimatedStyle]}>
-              <Ionicons name="time-outline" size={28} color="#ded8ecff" />
-              <Text style={styles.navText}>Timer</Text>
             </Animated.View>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => handleTabPress("stats")} style={styles.tabButton}>
@@ -239,7 +235,7 @@ const styles = StyleSheet.create({
   userCard: { flexDirection: "row", alignItems: "center", padding: 8, marginTop: 8 },
   userAvatar: { width: 36, height: 36, borderRadius: 18, backgroundColor: "white", justifyContent: "center", alignItems: "center" },
   userName: { fontSize: 16, fontWeight: "bold", color: "white" },
-  readyText: { fontSize: 12, color: "white", marginTop: 0 },
+  readyText: { fontSize: 12, color: "white", marginTop: 0,textAlign:"end" },
   featuresRow: { flexDirection: "row", justifyContent: "space-around", marginTop: 8, paddingHorizontal: 10 },
   feature: { alignItems: "center", justifyContent: "center" },
   featureIconContainer: {
@@ -251,15 +247,22 @@ const styles = StyleSheet.create({
   body: { padding: 10, paddingBottom: 60 },
   sectionTitle: { fontSize: 18, fontWeight: "600", marginBottom: 8 },
   subjectCard: {
-    backgroundColor: "white", borderRadius: 12, padding: 10, marginBottom: 8,
+    backgroundColor: "white", borderRadius: 13, padding: 12, marginBottom: 8,
     flexDirection: "row", alignItems: "center",
     shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4, elevation: 2,
   },
+  // subjectIconContainer: {
+  //   width: 45, height: 45, borderRadius: 22.5, backgroundColor: "#FFFFFF",
+  //   justifyContent: "center", alignItems: "center", marginRight: 8,
+  //   shadowColor: "#000", shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.1, shadowRadius: 2, elevation: 2,
+  // },
   subjectIconContainer: {
     width: 45, height: 45, borderRadius: 22.5, backgroundColor: "#FFFFFF",
+    width: 45, height: 45, borderRadius: 8, backgroundColor: "#FFFFFF",
     justifyContent: "center", alignItems: "center", marginRight: 8,
     shadowColor: "#000", shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.1, shadowRadius: 2, elevation: 2,
   },
+
   subjectIcon: { width: 35, height: 35 },
   subjectName: { fontSize: 15, fontWeight: "600", marginBottom: 4 },
   accuracy: { fontSize: 12, fontWeight: "500", marginLeft: 4 },
